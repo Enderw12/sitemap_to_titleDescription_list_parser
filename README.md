@@ -1,8 +1,8 @@
 # sitemap_to_titleDescription_list_parser
 Для использования скрипта нужно выполнить несколько шагов:
-1. Установите git  и клонируйте этот репозиторий 
+1. Установите git  и клонируйте этот репозиторий
     git clone git@github.com:Enderw12/sitemap_to_titleDescription_list_parser.git
-    или скачайте архив и распакуйте где ни будь в вашей файловой системе.
+или скачайте архив и распакуйте где ни будь в вашей файловой системе.
 2. Установите pipenv — https://pypi.org/project/pipenv/
 3. откройте терминал вашей OS и перейдите в каталог с парсером
 4. введите команду pipenv sync для установки всех зависимостей
@@ -12,7 +12,7 @@
     python parseMeta.py --help
 
 Пример использования скрипта:
-python parseMeta.py --sitemap https://foo.bar/sitemap.xml --threads 10 --timeout 2000
+    python parseMeta.py --sitemap https://foo.bar/sitemap.xml --threads 10 --timeout 2000
 где https://foo.bar/sitemap.xml — ссылка на sitemap.xml
 содержащий страницы сайта с которых нужно собрать МЕТА-теги title и description;
 
