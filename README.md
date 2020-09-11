@@ -1,7 +1,7 @@
 # sitemap_to_titleDescription_list_parser
 Для использования скрипта нужно выполнить несколько шагов:
 1. Установите git  и клонируйте этот репозиторий
-    git clone git@github.com:Enderw12/sitemap_to_titleDescription_list_parser.git
+git clone git@github.com:Enderw12/sitemap_to_titleDescription_list_parser.git
 или скачайте архив и распакуйте где ни будь в вашей файловой системе.
 2. Установите pipenv — https://pypi.org/project/pipenv/
 3. откройте терминал вашей OS и перейдите в каталог с парсером
