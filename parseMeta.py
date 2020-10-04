@@ -13,11 +13,11 @@ from datetime import datetime as datetime
 def toExcel(dataList, fileName):
     res = pd.DataFrame()
     for values in dataList:
-        res = res.append(pd.DataFrame([[values['pageLink'], values['url'],  values['title'], values['description'], ]], columns=[
-                         'pageLink', 'url', 'title', 'description', ]), ignore_index=True)
+        res = res.append(pd.DataFrame([[values['pageLink'], values['title'], values['tagTitle'], values['description'], values['tagDescription'], values['nameDescription'], values['nameKeywords']]], columns=[
+                         'pageLink', 'og:title', 'tagTitle', 'og:description', 'tagDescription', 'nameDescription', 'nameKeywords']), ignore_index=True)
 
     date = datetime.now()
-    resultName = f'{fileName}_{date.year}—{date.month}—{date.day}_{date.hour}:{date.minute}.xlsx'
+    resultName = f'{fileName} {date.year}-{date.month}-{date.day} {date.hour}-{date.minute}.xlsx'
     print(resultName)
     return res.to_excel(resultName)
 
@@ -26,7 +26,7 @@ def concurentParsing(function, listOfUrls, max_workers):
     results = []
 
     executor = futures.ThreadPoolExecutor(max_workers)
-    future_results = executor.map(function, listOfUrls[::])
+    future_results = executor.map(function, listOfUrls)
     for future in future_results:
         results.append(future)
 
@@ -38,13 +38,23 @@ def parseMetaTags(pageUrl):
     pageSoup = bs(page, features="lxml")
     values = {}
     title = pageSoup.find('meta', property='og:title')
-    description = pageSoup.find('meta', property='og:title')
-    url = pageSoup.find('meta', property='og:url')
+    description = pageSoup.find('meta', property='og:description')
+    tagTitle = pageSoup.find('title')
+    tagDescription = pageSoup.find('description')
+    nameDescription = pageSoup.find('meta', attrs={'name': 'description'})
+    if not nameDescription:
+        nameDescription = pageSoup.find('meta', attrs={'name': 'Description'})
+    nameKeywords = pageSoup.find('meta', attrs={'name': 'keywords'})
+    values['tagTitle'] = tagTitle.text if tagTitle else '-'
+    values['tagDescription'] = tagDescription.text if tagDescription else '-'
     values['title'] = title['content'] if title else '-'
     values['description'] = description['content'] if description else '-'
-    values['url'] = url['content'] if url else '-'
+    values['nameDescription'] = nameDescription['content'] if nameDescription else '-'
+    values['nameKeywords'] = nameKeywords['content'] if nameKeywords else '-'
+
     values['pageLink'] = pageUrl
     sleep(timeout/1000)
+    print(pageUrl)
     return values
 
 
@@ -53,6 +63,9 @@ def parsePagesUrls(sourceUrl):
     links = bs(sourcePage, features="lxml-xml").find_all('loc',)
     pagesUrls = []
     for loc in links:
+        # todo: implement filtering using url-part
+        # if loc.text.startswith('')
+        # if '' in loc.text
         url = loc.text
         pagesUrls.append(url)
     return pagesUrls
@@ -86,7 +99,7 @@ arguments = getArguments()
 sourceUrl = arguments.sitemap
 threads = arguments.threads
 timeout = arguments.timeout
-listOfUrls = parsePagesUrls(sourceUrl)
+listOfUrls = parsePagesUrls(sourceUrl)[::]
 print('Links found in sitemap.xml: ' + str(len(listOfUrls)))
 resultsList = []
 
